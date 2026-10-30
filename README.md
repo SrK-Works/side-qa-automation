@@ -63,7 +63,7 @@ The suite already surfaced real issues on the live site and API:
 
 ## Lessons from the first CI run
 
-The first pipeline run passed 40 of 47 tests and failed 7. Every failure was a test-design lesson, not a site bug:
+The first pipeline run had 40 passed, 6 failed and 1 flaky out of 47. Every failure was a test-design lesson, not a site bug:
 
 - **Duplicate responsive markup:** the CAPTCHA error is rendered twice (mobile + desktop layouts), so the locator now filters to the *visible* copy.
 - **CSS vs DOM text:** headings are mixed case in the DOM and uppercased by CSS, so text assertions are case-insensitive.
@@ -74,7 +74,7 @@ The first pipeline run passed 40 of 47 tests and failed 7. Every failure was a t
 ## Running it
 
 ```bash
-npm ci
+npm install
 npx playwright install chromium
 
 npm test              # everything
@@ -84,6 +84,7 @@ npm run test:ui       # desktop web
 npm run test:mobile   # mobile viewport
 npm run test:a11y     # accessibility scans
 npm run report        # open the HTML report
+npx playwright test --ui   # interactive UI mode: watch each step, time-travel through actions
 ```
 
 Override targets with a `.env` file (see `.env.example`), e.g. `BASE_URL=https://staging.side.inc`.
