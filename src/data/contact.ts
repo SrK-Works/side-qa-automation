@@ -6,4 +6,10 @@ export const contactValidation = {
   captcha: 'Please Validate CAPTCHA',
 };
 
-export const invalidEmails = ['plainaddress', 'missing-at.com', 'user@', '@no-user.com'];
+/** Labels keep "@" out of test titles (Playwright treats "@word" in a title as a tag). */
+export const invalidEmails = [
+  { label: 'plain text, no at-sign', value: 'plainaddress' },
+  { label: 'domain only, no at-sign', value: 'missing-at.com' },
+  { label: 'missing domain', value: 'user@' },
+  { label: 'missing local part', value: '@no-user.com' },
+];

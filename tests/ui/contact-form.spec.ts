@@ -21,8 +21,8 @@ test.describe('Contact form validation', () => {
   });
 
   for (const bad of invalidEmails) {
-    test(`rejects invalid email "${bad}" @regression`, async ({ contactPage }) => {
-      await contactPage.fill({ email: bad });
+    test(`rejects invalid email: ${bad.label} @regression`, async ({ contactPage }) => {
+      await contactPage.fill({ email: bad.value });
       await contactPage.submit.click();
       await expect(contactPage.email).toHaveAttribute('aria-invalid', 'true');
       await expect(contactPage.error(contactValidation.email)).toBeVisible();
