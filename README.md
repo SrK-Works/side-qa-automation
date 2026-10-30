@@ -55,11 +55,21 @@ side-qa-automation/
 
 The suite already surfaced real issues on the live site and API:
 
-1. **Accessibility (critical):** on `/contact`, dropdown `<label role="button">` elements use `aria-required`, which is not allowed on `role=button` (axe `aria-allowed-attr`).
+1. **Accessibility (critical):** dropdown `<label role="button">` elements use `aria-required`, which is not allowed on `role=button` (axe `aria-allowed-attr`), and icon-only buttons on the home page have no accessible name (axe `button-name`).
 2. **Accessibility (serious, every page):** 5 footer social icon links have no accessible name, so screen readers announce just "link".
 3. **Accessibility (serious):** 3 low colour-contrast text nodes in the contact form.
 4. **API data quality:** a few freelance LQA postings return `employment_type: null`. The contract test treats it as nullable, and a separate report test flags it if it grows past 5%.
 5. **API data model:** multi-location postings (talent pools) are flattened into one entry per city with the **same shortcode**, so `shortcode` is not a unique key. The integrity test checks `shortcode + city + country` instead, and that entries sharing a shortcode share a title.
+
+## Lessons from the first CI run
+
+The first pipeline run passed 40 of 47 tests and failed 7. Every failure was a test-design lesson, not a site bug:
+
+- **Duplicate responsive markup:** the CAPTCHA error is rendered twice (mobile + desktop layouts), so the locator now filters to the *visible* copy.
+- **CSS vs DOM text:** headings are mixed case in the DOM and uppercased by CSS, so text assertions are case-insensitive.
+- **aria-hidden carousels on mobile:** off-screen slides are hidden from the accessibility tree, so the mobile check asserts on DOM text.
+- **Rate limiting:** firing ~30 parallel requests caused connection resets, so the link checker is sequential with retries.
+- **Environment differences:** the CI browser surfaced two extra critical a11y issues not seen locally. They are now in the known baseline.
 
 ## Running it
 

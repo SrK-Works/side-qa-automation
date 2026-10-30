@@ -57,6 +57,7 @@ export class ContactPage extends BasePage {
   }
 
   error(text: string | RegExp): Locator {
-    return this.form.getByText(text).first();
+    // The site renders some messages twice (mobile + desktop layouts); assert on the visible one.
+    return this.form.getByText(text).filter({ visible: true }).first();
   }
 }

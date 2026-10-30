@@ -26,7 +26,9 @@ test.describe('Service pages (data-driven)', () => {
     await qa.open();
     await expect(page).toHaveTitle(/QA/);
     for (const type of ['FUNCTIONALITY TESTING', 'COMPATIBILITY TESTING', 'AUTOMATION', 'PLAYTESTING']) {
-      await expect(page.getByRole('button', { name: type }).first()).toBeAttached();
+      // On mobile these sit in a carousel where off-screen slides are aria-hidden,
+      // so assert on DOM text rather than the accessibility tree.
+      await expect(page.getByRole('main')).toContainText(new RegExp(type, 'i'));
     }
   });
 });

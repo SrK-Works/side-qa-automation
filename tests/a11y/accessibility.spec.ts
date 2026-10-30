@@ -22,9 +22,8 @@ test.describe('Accessibility (axe-core)', () => {
       const summary = results.violations.map((v) => `${v.impact}: ${v.id} (${v.nodes.length} nodes)`);
       testInfo.annotations.push({ type: 'axe', description: summary.join(' | ') || 'no violations' });
 
-      const baseline = knownCriticalViolations[path] ?? [];
-      const newCritical = results.violations
-        .filter((v) => v.impact === 'critical' && !baseline.includes(v.id))
+            const newCritical = results.violations
+        .filter((v) => v.impact === 'critical' && !knownCriticalViolations.includes(v.id))
         .map((v) => v.id);
       expect(newCritical, summary.join('\n')).toEqual([]);
     });

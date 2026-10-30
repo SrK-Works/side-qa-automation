@@ -36,9 +36,13 @@ test.describe('Home page and navigation', () => {
     const pages = hrefs.filter((h) => !h.endsWith('.pdf'));
     expect(pages.length).toBeGreaterThan(10);
 
-    const results = await Promise.all(
-      pages.map(async (href) => ({ href, status: (await request.get(href)).status() })),
-    );
+    // Sequential + retries: the site resets bursts of parallel connections (rate limiting),
+    // and a link checker should not hammer production anyway.
+    const results: { href: string; status: number }[] = [];
+    for (const href of pages) {
+      const res = await request.get(href, { maxRetries: 2 });
+      results.push({ href, status: res.status() });
+    }
     const broken = results.filter((r) => r.status >= 400);
     expect(broken, `Broken links: ${JSON.stringify(broken)}`).toEqual([]);
   });
